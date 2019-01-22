@@ -28,17 +28,10 @@ In addition, spectral pooling remains to be implemented, and a faster [implement
 
 # Install
 ### Installing Tensorflow with GPU support
-```bash
-export TF_BINARY_URL=https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.9.0rc0-cp27-none-linux_x86_64.whl
-sudo pip install --upgrade $TF_BINARY_URL
-```
-
-### Installing python
-It's best to install [Anaconda](https://www.continuum.io/downloads) which comes complete with numpy and conda (used for opencv install)
-
+Anaconda based Tensorflow is highly recommended.
 ### Installing needed python packages
 ```bash
-pip install tqdm
+conda install tqdm
 conda install opencv
 ```
 
