@@ -1,5 +1,5 @@
 # Purpose
-This is Windows based Tensorflow MNIST FFT CNN example.'
+This is Windows based Tensorflow MNIST FFT CNN example.  
 This repository is an implementation of the paper [Spectral Representations for Convolutional Neural Networks](http://arxiv.org/abs/1506.03767) in [Tensorflow](http://tensorflow.org/)
 
 # Next Steps
