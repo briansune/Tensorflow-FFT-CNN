@@ -122,13 +122,13 @@ class FFTConvTest:
 				init = self.initialization[name]
 
 			# Option 1: Over-Parameterize fully in the spectral domain
-			# w_real = tf.Variable(init.real, dtype=tf.float32, name='real')
-			# w_imag = tf.Variable(init.imag, dtype=tf.float32, name='imag')
-			# w = tf.cast(tf.complex(w_real, w_imag), tf.complex64)
+			w_real = tf.Variable(init.real, dtype=tf.float32, name='real')
+			w_imag = tf.Variable(init.imag, dtype=tf.float32, name='imag')
+			w = tf.cast(tf.complex(w_real, w_imag), tf.complex64)
 
 			# Option 2: Parameterize only 'free' parameters in the spectral domain to enforce conjugate symmetry
 			#		   This is very slow.
-			w = self.spectral_to_variable(init)
+			#w = self.spectral_to_variable(init)
 
 			b = tf.Variable(tf.constant(0.1, shape=[filters]))
 
@@ -170,26 +170,29 @@ class FFTConvTest:
 
 		_, input_height, input_width, channels = source.get_shape().as_list()
 
-		with tf.variable_scope(name):
+		with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
 			init = self.random_spatial_to_spectral(channels, filters, height, width)
 
 			if name in self.initialization:
 				init = self.initialization[name]
 
 			# Option 1: Over-Parameterize fully in the spectral domain
-			# w_real = tf.Variable(init.real, dtype=tf.float32, name='real')
-			# w_imag = tf.Variable(init.imag, dtype=tf.float32, name='imag')
-			# w = tf.cast(tf.complex(w_real, w_imag), tf.complex64)
+			w_real = tf.Variable(init.real, dtype=tf.float32, name='real')
+			w_imag = tf.Variable(init.imag, dtype=tf.float32, name='imag')
+			w = tf.cast(tf.complex(w_real, w_imag), tf.complex64)
 
 			# Option 2: Parameterize only 'free' parameters in the spectral domain to enforce conjugate symmetry
 			#		   This is very slow.
-			w = self.spectral_to_variable(init)
+			#w = self.spectral_to_variable(init)
 
 			# Option 3: Parameterize in the spatial domain
-			# w = tf.get_variable("weight", [channels, filters, height, width],
-			#								  initializer=tf.truncated_normal_initializer(0, stddev=0.01),
-			#								  dtype=tf.float32)
-			# w = tf.fft2d(tf.complex(w, w*0.0))
+			#w = tf.get_variable(
+			#	"weight_fft",		# this name MUST MUST MUST be unique!!!!
+			#	[channels, filters, height, width],
+			#	initializer=tf.truncated_normal_initializer(0, stddev=0.01),
+			#	dtype=tf.float32
+			#)
+			#w = tf.fft2d(tf.complex(w, w*0.0))
 
 			b = tf.Variable(tf.constant(0.1, shape=[filters]))
 
@@ -208,8 +211,13 @@ class FFTConvTest:
 		w_shifted = self.batch_fftshift2d(w)
 		height_pad = (input_height - height) // 2
 		width_pad = (input_width - width) // 2
-		w_padded = tf.pad(w_shifted, [[0, 0], [0, 0], [0, 0], [height_pad, height_pad], [width_pad, width_pad]],
-						  mode='CONSTANT')  # Pads with zeros
+		
+		# Pads with zeros
+		w_padded = tf.pad(
+			w_shifted,
+			[[0, 0], [0, 0], [0, 0], [height_pad, height_pad], [width_pad, width_pad]],
+			mode='CONSTANT'
+		)
 		w_padded = self.batch_ifftshift2d(w_padded)
 
 		# Convolve with the filter in spectral domain
