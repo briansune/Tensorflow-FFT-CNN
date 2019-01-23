@@ -147,36 +147,20 @@ class FFTConvTest:
 	def batch_fftshift2d(self, tensor):
 		# Shifts high frequency elements into the center of the filter
 		indexes = len(tensor.get_shape()) - 1
-		print(tensor.get_shape())
-		print(indexes)
 		top, bottom = tf.split(tensor, 2, indexes)
-		print(top)
-		print(bottom)
 		tensor = tf.concat([bottom, top], indexes)
-		print(tensor)
 		left, right = tf.split(tensor, 2, indexes - 1)
-		print(left)
-		print(right)
 		tensor = tf.concat([right, left], indexes - 1)
-		print(tensor)
 		
 		return tensor
 
 	def batch_ifftshift2d(self, tensor):
 		# Shifts high frequency elements into the center of the filter
 		indexes = len(tensor.get_shape()) - 1
-		print(tensor.get_shape())
-		print(indexes)
 		left, right = tf.split(tensor, 2, indexes - 1)
-		print(left)
-		print(right)
 		tensor = tf.concat([right, left], indexes - 1)
-		print(tensor)
 		top, bottom = tf.split(tensor, 2, indexes)
-		print(top)
-		print(bottom)
 		tensor = tf.concat([bottom, top], indexes)
-		print(tensor)
 		
 		return tensor
 
